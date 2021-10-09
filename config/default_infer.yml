@@ -8,3 +8,5 @@ num_proc: 1 # Number of processes, might be used for non-auto-regressive inferen
 batch_size: 1 # Inference batch size, might be used for non-auto-regressive inference
 use_cpu: true # Forcing code to use cpu and ignore 'device'
 device: [0] # List of CUDA device indices
+note_bpm: 120 # The Tempo
+note_key: 0 # The difference of pitch to infer

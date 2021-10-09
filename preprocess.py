@@ -14,6 +14,8 @@ from config_parser import Config
 from file_utils import create_path
 from midi_utils import load_midi
 
+import editmidi
+
 def load_text(filename):
     text_file = open(filename)
     text = text_file.read().replace(' ', '').replace('\n', '')
@@ -89,6 +91,13 @@ def files4infer(filename, config):
 
         file_list.append(f)
 
+    if config.file_structure == 1:
+        f = os.path.join(filepath, 'edited_' + basename + '.mid')
+        file_list.append(f)
+    elif config.file_structure == 2:
+        f = os.path.join(filepath, 'mid', 'edited_' + basename + '.mid')
+        file_list.append(f)
+
     return file_list
 
 def zero_pad(x, pad_length):
@@ -101,10 +110,16 @@ def preprocess(filename, set_type, config):
     if not infer:
         txt_file, mid_file, wav_file = files4train(filename, config)
     else:
-        txt_file, mid_file = files4infer(filename, config)
+        txt_file, mid_file, edit_file = files4infer(filename, config)
 
     text = load_text(txt_file)
-    note = load_midi(mid_file)
+    
+    if not infer:
+        note = load_midi(mid_file)
+    else:
+        editmidi.edit_midi(dkey=config.note_key, bpm=config.note_bpm, filename=mid_file, output=edit_file)
+        note = load_midi(edit_file)
+
     text, note = align_label(text, note, config)
 
     # Zero pad to make 1 more iteration
@@ -147,6 +162,8 @@ def preprocess(filename, set_type, config):
         savename = os.path.join(config.feature_path, set_type, basename + '.pt')
         torch.save(data_list, savename)
         print(basename)
+    else:
+        os.remove(edit_file)
 
     return data_list
 

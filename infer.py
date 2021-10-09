@@ -14,6 +14,8 @@ import preprocess
 import dataprocess
 from models import Generator
 
+import editmidi
+
 def main():
     config = Config()
 

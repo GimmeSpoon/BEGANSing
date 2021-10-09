@@ -93,9 +93,12 @@ def spectrogram(wave, config, squeeze=True):
     spec = normalize(spec, config.min_db, config.max_db, config.clip_val)
 
     if squeeze:
-        spec = spec.squeeze(0)
+        spec = spec.squeeze()
     
-    return spec
+    if len(spec) == 2:
+        return spec[0]
+    else:
+        return spec
 
 def inv_spectrogram(spec, config):
     griffin_lim = GriffinLim(n_fft=config.fft_size,
