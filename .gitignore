@@ -4,3 +4,4 @@ sample_dataset/mid
 sample_dataset/txt
 checkpoint
 feature
+__pycache__
